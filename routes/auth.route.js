@@ -1,10 +1,14 @@
 const express = require('express');
+const {
+  signup,
+  signin,
+  verifyToken,
+} = require('../controllers/auth.controller');
 const router = express.Router();
 
-router.post('/', (req, res, next) => {
-  console.log('1', req.query, req.body);
-  res.send('data');
-});
+router.post('/signup', signup);
+router.post('/signin', signin);
+router.post('/checkToken', verifyToken);
 router.get('/', (req, res, next) => {
   res.cookie('room', '123213');
   res.send({ some: 'json' });

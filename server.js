@@ -6,6 +6,14 @@ const cookieParser = require('cookie-parser');
 // have to use multer package to handle multipart/form-data
 var multer = require('multer');
 const authRoute = require('./routes/auth.route');
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGO_URL, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
+mongoose.set('useCreateIndex', true);
+
 // var storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
 //     cb(null, './uploads');
@@ -62,6 +70,6 @@ app.use(express.urlencoded({ extended: false }));
 //   // res.send(file);
 //   res.redirect('http://localhost:3000/login');
 // });
-app.use('/signup', authRoute);
+app.use('/auth', authRoute);
 
 app.listen(process.env.PORT);
