@@ -38,9 +38,6 @@ const verify = async (token) => {
     audience: process.env.CLIENT_ID,
   });
   return user;
-  // const payload = ticket.getPayload();
-  // const userid = payload['sub'];
-  // console.log(ticket);
 };
 export const signin = async (req, res) => {
   const { email, password, googleToken } = req.body;
@@ -53,7 +50,7 @@ export const signin = async (req, res) => {
       let user = await User.findOne({ email }).exec();
       if (user) {
         const tokenId = jwt.sign({ user: user }, process.env.SECRET_TOKEN, {
-          expiresIn: 9999,
+          expiresIn: '8 hours',
         });
         return res.json({
           data: { user, tokenId },
@@ -71,9 +68,11 @@ export const signin = async (req, res) => {
             { user: newUser },
             process.env.SECRET_TOKEN,
             {
-              expiresIn: 9999,
+              expiresIn: '8 hours',
             }
           );
+          user = user.toObject();
+          delete user.password;
           return res.json({
             data: { user, tokenId },
             errorStatus: false,
@@ -98,9 +97,10 @@ export const signin = async (req, res) => {
           errorStatus: true,
         });
       }
-      delete user.password;
-      const tokenId = jwt.sign({ user: user }, process.env.SECRET_TOKEN, {
-        expiresIn: 9999,
+      // user = user.toObject();
+      // delete user.password;
+      const tokenId = jwt.sign({ user }, process.env.SECRET_TOKEN, {
+        expiresIn: '8 hours',
       });
       return res.json({
         data: { user, tokenId },
@@ -108,7 +108,7 @@ export const signin = async (req, res) => {
       });
     } else {
       return res.json({
-        data: { details: [{ message: 'Username incorrect' }] },
+        data: { details: [{ message: 'Username incorrect', user }] },
         errorStatus: true,
       });
     }
