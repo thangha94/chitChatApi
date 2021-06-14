@@ -7,8 +7,10 @@ const mongoose = require('mongoose');
 
 const authRoute = require('./routes/auth.route');
 const userRoute = require('./routes/user.route');
+const roomRoute = require('./routes/room.route');
+const messageRoute = require('./routes/message.route');
 // const messageRoute = require('./routes/message.route');
-const socketConnection = require('./socket.config');
+const socketConnection = require('./socket.config').socketConnection;
 const { checkToken } = require('./auth/checkToken');
 
 //  Config and connect to mongodb
@@ -38,6 +40,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
+app.use('/room', roomRoute);
+app.use('/message', messageRoute);
 // app.use('/message', checkToken, messageRoute);
 // Start pure express App
 // app.listen(process.env.PORT);

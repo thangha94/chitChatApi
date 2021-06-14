@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     index: true,
   },
+  status: {
+    type: Boolean,
+    required: true,
+  },
   refreshToken: {
     type: String,
   },

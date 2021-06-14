@@ -1,7 +1,7 @@
-// const express = require('express');
-// const { send } = require('../controllers/message.controller');
-// const router = express.Router();
+const express = require('express');
+const { getMessagesByRoom } = require('../controllers/message.controller');
+const router = express.Router();
 
-// router.post('/send', send);
+router.get('/getMessagesByRoom', getMessagesByRoom);
 
-// module.exports = router;
+module.exports = router;

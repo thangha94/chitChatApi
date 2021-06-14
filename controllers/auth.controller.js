@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import registerValidation from '../auth/validation';
+import { updateUsers } from '../socket.config';
 // import { delete } from '../routes/auth.route';
 
 export const signup = async (req, res) => {
@@ -23,11 +24,17 @@ export const signup = async (req, res) => {
   }
   const salt = await bcrypt.genSalt(10);
   const hashPass = await bcrypt.hash(password, salt);
-  let newUser = new User({ userName, email, password: hashPass });
-  newUser.save((err, user) => {
+  let newUser = new User({
+    userName,
+    email,
+    password: hashPass,
+    status: false,
+  });
+  newUser.save(async (err, user) => {
     if (err) {
       return res.json({ data: { details: [err] }, errorStatus: true });
     }
+    await updateUsers();
     return res.json({ data: 'Signup success!' });
   });
 };

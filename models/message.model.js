@@ -13,6 +13,7 @@ const messageSchema = new mongoose.Schema({
   room: {
     type: Schema.Types.ObjectId,
     ref: 'room',
+    required: true,
   },
 });
 
