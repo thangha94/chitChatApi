@@ -19,7 +19,9 @@ export const socketConnection = async (socket) => {
       socket.join(item._id.toString());
     });
     socket.join(user.user._id.toString());
-    socket.on('Client-normal-message', (data) => receiveMessage(socket, data));
+    socket.on('Client-normal-message', (data) =>
+      receiveMessage(socket, data, user.user)
+    );
     socket.on('Client-first-join-room', (data) => {
       socket.join(data.roomId.toString());
       io.to(data.roomId.toString()).emit('Server-send-new-room-data', {

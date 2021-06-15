@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { io } from '../server';
 import { getRoomByUsers, Room } from '../models/room.model';
 
-export const receiveMessage = async (socket, data) => {
+export const receiveMessage = async (socket, data, user) => {
   // If this is a direct message: check whether db has the room includes 2 users
   // Create new room or go to next step
   // Save the message to message
@@ -11,18 +11,16 @@ export const receiveMessage = async (socket, data) => {
   let room = false;
   if (data.type === 'direct') {
     let roomDoc = await getRoomByUsers([
-      mongoose.Types.ObjectId(data.users[0]._id),
-      mongoose.Types.ObjectId(data.users[1]._id),
+      mongoose.Types.ObjectId(data.id),
+      mongoose.Types.ObjectId(user._id),
     ]);
-    console.log('create new room', roomDoc);
     // if the room didn't exist then create new room
     if (!roomDoc || roomDoc.length === 0) {
-      console.log('create new room');
       let newRoom = new Room({
         name: '',
         users: [
-          mongoose.Types.ObjectId(data.users[0]._id),
-          mongoose.Types.ObjectId(data.users[1]._id),
+          mongoose.Types.ObjectId(data.id),
+          mongoose.Types.ObjectId(user._id),
         ],
       });
       let roomN = await newRoom.save();
@@ -31,24 +29,24 @@ export const receiveMessage = async (socket, data) => {
         return false;
       }
       socket.join(roomN._id.toString());
-      io.to(data.users[0]._id.toString()).emit('Server-join-room', {
+      io.to(user._id.toString()).emit('Server-join-room', {
         roomId: mongoose.Types.ObjectId(roomN._id),
       });
-      // room = roomN._id.toString();
       room = roomN;
     } else {
-      // room = roomDoc._id.toString();
       room = roomDoc;
     }
+  } else {
+    room = await Room.findOne({ _id: mongoose.Types.ObjectId(data.id) });
   }
 
   if (room) {
     let newMessage = new Message({
       content: data.content,
       room: room._id,
-      user: data.user._id,
+      user: user._id,
     });
-    newMessage.save((err, user) => {
+    newMessage.save((err, message) => {
       if (err) {
         io.to(room._id.toString()).emit('Server-send-data', {
           data: { details: [err] },
@@ -56,7 +54,7 @@ export const receiveMessage = async (socket, data) => {
         });
       } else {
         io.to(room._id.toString()).emit('Server-send-data', {
-          data,
+          data: { ...data, user },
           roomId: room._id.toString(),
           errorStatus: false,
         });
