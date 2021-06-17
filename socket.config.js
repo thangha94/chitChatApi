@@ -14,7 +14,7 @@ export const socketConnection = async (socket) => {
     let user = jwt.verify(tokenId, process.env.SECRET_TOKEN);
     let rooms = await getRoomsByUser(user.user._id);
     let updateUser = await updateStatusUser(user.user._id, true);
-    let sendMessage = await updateUsers();
+    let sendMessage = await sendMessageUpdateUser();
     rooms.map((item) => {
       socket.join(item._id.toString());
     });
@@ -30,32 +30,21 @@ export const socketConnection = async (socket) => {
       });
     });
     socket.on('disconnect-socket', async (reason) => {
-      let updateUser = await updateStatusUser(user.user._id, false);
-      let disSendMessage = await updateUsers();
+      handleCloseConnection();
     });
-    // socket.on('disconnect', async (reason) => {
-    //   let updateUser = await updateStatusUser(user.user._id, false);
-    //   let disSendMessage = await updateUsers();
-    //   console.log(
-    //     'Disconnected with reason: ',
-    //     reason,
-    //     new Date().getTime(),
-    //     user.user.userName,
-    //     reason
-    //   );
-    // });
+    socket.on('disconnect', async (reason) => {
+      handleCloseConnection();
+    });
+    const handleCloseConnection = async () => {
+      await updateStatusUser(user.user._id, false);
+      await sendMessageUpdateUser();
+    };
   } catch (error) {
     console.log('Connection Error: ', error);
   }
 };
 
-export const updateUsers = async () => {
-  let users = await User.find({
-    // _id: { $ne: mongoose.Types.ObjectId(req.user._id) },
-  })
-    .select('userName email status')
-    .exec();
+export const sendMessageUpdateUser = async () => {
+  let users = await User.find({}).select('userName email status').exec();
   io.sockets.emit('Server-update-users', users);
 };
-
-// module.exports.socketConnection = socketConnection;

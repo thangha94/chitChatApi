@@ -53,6 +53,26 @@ const io = require('socket.io')(server, {
     origin: 'http://localhost:3000',
   },
 });
+function requestFc() {
+  const https = require('https');
+  let result = '';
+  https
+    .get(
+      'https://jsonmock.hackerrank.com/api/stocks?date=5-January-2000',
+      (res) => {
+        res.on('data', (d) => {
+          result = d;
+          process.stdout.write(d);
+        });
+      }
+    )
+    .on('error', (e) => {
+      console.error(e);
+    });
+  return result;
+}
+
+console.log(requestFc());
 
 io.on('connection', socketConnection);
 

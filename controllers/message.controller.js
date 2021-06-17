@@ -1,7 +1,7 @@
 import { Message } from '../models/message.model';
 import mongoose from 'mongoose';
 import { io } from '../server';
-import { getRoomByUsers, Room } from '../models/room.model';
+import { getDirectRoomByUsers, Room } from '../models/room.model';
 
 export const receiveMessage = async (socket, data, user) => {
   // If this is a direct message: check whether db has the room includes 2 users
@@ -10,37 +10,38 @@ export const receiveMessage = async (socket, data, user) => {
   // Send new message to client
   let room = false;
   if (data.type === 'direct') {
-    let roomDoc = await getRoomByUsers([
+    room = await getDirectRoomByUsers([
       mongoose.Types.ObjectId(data.id),
       mongoose.Types.ObjectId(user._id),
     ]);
     // if the room didn't exist then create new room
-    if (!roomDoc || roomDoc.length === 0) {
-      let newRoom = new Room({
+    if (!room || room.length === 0) {
+      room = new Room({
         name: '',
         users: [
           mongoose.Types.ObjectId(data.id),
           mongoose.Types.ObjectId(user._id),
         ],
       });
-      let roomN = await newRoom.save();
-      if (!roomN) {
+      let room = await room.save();
+      if (!room) {
         console.log('Get error when create Room');
         return false;
       }
-      socket.join(roomN._id.toString());
+      socket.join(room._id.toString());
       io.to(user._id.toString()).emit('Server-join-room', {
-        roomId: mongoose.Types.ObjectId(roomN._id),
+        roomId: mongoose.Types.ObjectId(room._id),
       });
-      room = roomN;
-    } else {
-      room = roomDoc;
     }
   } else {
     room = await Room.findOne({ _id: mongoose.Types.ObjectId(data.id) });
   }
 
   if (room) {
+    // Update the latest update for a room
+    room.updated = new Date();
+    room.save();
+
     let newMessage = new Message({
       content: data.content,
       room: room._id,
