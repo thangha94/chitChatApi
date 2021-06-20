@@ -26,7 +26,11 @@ app.use(cookieParser());
 //  Config CORS to handle the CORS problem
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'http://chitchat.com'],
+    origin: [
+      'http://localhost:3000',
+      'http://chitchat.com',
+      'http://hathang.online',
+    ],
     // methods: ['POST', 'GET'],
     credentials: true,
     // exposedHeaders: ['set-cookie'],
