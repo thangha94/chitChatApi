@@ -26,7 +26,7 @@ app.use(cookieParser());
 //  Config CORS to handle the CORS problem
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'http://chitchat.com'],
     // methods: ['POST', 'GET'],
     credentials: true,
     // exposedHeaders: ['set-cookie'],
@@ -50,7 +50,11 @@ app.use('/message', messageRoute);
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'http://chitchat.com',
+      'http://hathang.online',
+    ],
   },
 });
 function requestFc() {
@@ -72,7 +76,7 @@ function requestFc() {
   return result;
 }
 
-console.log(requestFc());
+// console.log(requestFc());
 
 io.on('connection', socketConnection);
 

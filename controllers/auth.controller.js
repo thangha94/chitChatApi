@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import registerValidation from '../auth/validation';
-import { updateUsers } from '../socket.config';
+import { sendMessageUpdateUser } from '../socket.config';
 // import { delete } from '../routes/auth.route';
 
 export const signup = async (req, res) => {
@@ -34,7 +34,7 @@ export const signup = async (req, res) => {
     if (err) {
       return res.json({ data: { details: [err] }, errorStatus: true });
     }
-    await updateUsers();
+    await sendMessageUpdateUser();
     return res.json({ data: 'Signup success!' });
   });
 };
