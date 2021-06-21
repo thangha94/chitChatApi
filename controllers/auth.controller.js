@@ -1,9 +1,9 @@
-import { User } from '../models/user.model';
+import { User } from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
-import registerValidation from '../auth/validation';
-import { sendMessageUpdateUser } from '../socket.config';
+import registerValidation from '../auth/validation.js';
+import { sendMessageUpdateUser } from '../socket.config.js';
 // import { delete } from '../routes/auth.route';
 
 export const signup = async (req, res) => {

@@ -1,7 +1,7 @@
-import { Message } from '../models/message.model';
+import { Message } from '../models/message.model.js';
 import mongoose from 'mongoose';
-import { io } from '../server';
-import { getDirectRoomByUsers, Room } from '../models/room.model';
+import { io } from '../server.js';
+import { getDirectRoomByUsers, Room } from '../models/room.model.js';
 
 export const receiveMessage = async (socket, data, user) => {
   // If this is a direct message: check whether db has the room includes 2 users

@@ -1,5 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
-import { io } from '../server';
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
+import { io } from '../server.js';
 
 const roomSchema = new mongoose.Schema({
   name: {

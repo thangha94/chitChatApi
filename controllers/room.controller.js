@@ -4,9 +4,9 @@ import {
   getRoomsByUser,
   getRoomsRecent,
   Room,
-} from '../models/room.model';
-import { User } from '../models/user.model';
-import { io } from '../server';
+} from '../models/room.model.js';
+import { User } from '../models/user.model.js';
+import { io } from '../server.js';
 
 export const getRoomByUsersCtl = async (req, res, next) => {
   let users = [req.query.user1, req.query.user2];

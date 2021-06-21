@@ -1,7 +1,7 @@
-const express = require('express');
-const { getMessagesByRoom } = require('../controllers/message.controller');
+import express from 'express';
+import { getMessagesByRoom } from '../controllers/message.controller.js';
 const router = express.Router();
 
 router.get('/getMessagesByRoom', getMessagesByRoom);
 
-module.exports = router;
+export default router;

@@ -2,7 +2,7 @@
   "name": "interviewapi",
   "version": "1.0.0",
   "description": "Simple API",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "nodemon --exec babel-node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -29,5 +29,6 @@
     "unique-string": "^3.0.0",
     "xml": "^1.0.1",
     "xml2js": "^0.4.23"
-  }
+  },
+  "type": "module"
 }

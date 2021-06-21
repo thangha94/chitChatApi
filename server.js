@@ -1,17 +1,20 @@
-require('dotenv').config();
-const express = require('express');
-const app = express();
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
 
-const authRoute = require('./routes/auth.route');
-const userRoute = require('./routes/user.route');
-const roomRoute = require('./routes/room.route');
-const messageRoute = require('./routes/message.route');
-// const messageRoute = require('./routes/message.route');
-const socketConnection = require('./socket.config').socketConnection;
-const { checkToken } = require('./auth/checkToken');
+const app = express();
+import cors from 'cors';
+
+import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
+
+import authRoute from './routes/auth.route.js';
+
+import userRoute from './routes/user.route.js';
+import roomRoute from './routes/room.route.js';
+import messageRoute from './routes/message.route.js';
+import { socketConnection } from './socket.config.js';
+import { checkToken } from './auth/checkToken.js';
 
 //  Config and connect to mongodb
 mongoose.connect(process.env.MONGO_URL, {
@@ -51,8 +54,10 @@ app.use('/message', messageRoute);
 // app.listen(process.env.PORT);
 
 // Config and start Socket IO server includes express features
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
+import http from 'http';
+const server = http.createServer(app);
+import { Server } from 'socket.io';
+const io = new Server(server, {
   cors: {
     origin: [
       'http://localhost:3000',
@@ -61,24 +66,24 @@ const io = require('socket.io')(server, {
     ],
   },
 });
-function requestFc() {
-  const https = require('https');
-  let result = '';
-  https
-    .get(
-      'https://jsonmock.hackerrank.com/api/stocks?date=5-January-2000',
-      (res) => {
-        res.on('data', (d) => {
-          result = d;
-          process.stdout.write(d);
-        });
-      }
-    )
-    .on('error', (e) => {
-      console.error(e);
-    });
-  return result;
-}
+// function requestFc() {
+//   const https = require('https');
+//   let result = '';
+//   https
+//     .get(
+//       'https://jsonmock.hackerrank.com/api/stocks?date=5-January-2000',
+//       (res) => {
+//         res.on('data', (d) => {
+//           result = d;
+//           process.stdout.write(d);
+//         });
+//       }
+//     )
+//     .on('error', (e) => {
+//       console.error(e);
+//     });
+//   return result;
+// }
 
 // console.log(requestFc());
 
@@ -88,4 +93,4 @@ server.listen(process.env.PORT, () => {
   console.log('Server listening on :' + process.env.PORT);
 });
 
-module.exports.io = io;
+export { io };

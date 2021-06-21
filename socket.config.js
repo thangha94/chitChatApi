@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
-import { io } from './server';
+import { io } from './server.js';
 import mongoose from 'mongoose';
-import { receiveMessage } from './controllers/message.controller';
-import { updateStatusUser } from './controllers/user.controller';
-import { getRoomsByUser } from './models/room.model';
-import { User } from './models/user.model';
+import { receiveMessage } from './controllers/message.controller.js';
+import { updateStatusUser } from './controllers/user.controller.js';
+import { getRoomsByUser } from './models/room.model.js';
+import { User } from './models/user.model.js';
 export const socketConnection = async (socket) => {
   let tokenId = socket.handshake.query.tokenId;
   try {
