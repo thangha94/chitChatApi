@@ -33,6 +33,7 @@ app.use(
       'http://localhost:3000',
       'http://chitchat.com',
       'http://hathang.online',
+      'https://hathang.online',
     ],
     // methods: ['POST', 'GET'],
     credentials: true,
@@ -63,6 +64,7 @@ const io = new Server(server, {
       'http://localhost:3000',
       'http://chitchat.com',
       'http://hathang.online',
+      'https://hathang.online',
     ],
   },
 });
