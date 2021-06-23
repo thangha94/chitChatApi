@@ -88,7 +88,9 @@ export const signin = async (req, res) => {
       }
     } catch (err) {
       return res.json({
-        data: { details: [{ message: 'Please recheck your Google account' }] },
+        data: {
+          details: [{ message: 'Please recheck your Google account' }, { err }],
+        },
         errorStatus: true,
       });
     }

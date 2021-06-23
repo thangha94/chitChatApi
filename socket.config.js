@@ -40,7 +40,7 @@ export const socketConnection = async (socket) => {
       await sendMessageUpdateUser();
     };
   } catch (error) {
-    console.log('Connection Error: ', error);
+    // console.log('Connection Error: ', error);
   }
 };
 
