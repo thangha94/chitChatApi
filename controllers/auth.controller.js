@@ -52,7 +52,6 @@ export const signin = async (req, res) => {
     try {
       let googleUser = await verify(googleToken);
       let email = googleUser.payload.email;
-
       // Return token if email already exists else create new
       let user = await User.findOne({ email }).exec();
       if (user) {
@@ -65,8 +64,12 @@ export const signin = async (req, res) => {
         });
       } else {
         const salt = await bcrypt.genSalt(10);
-        const hashPass = await bcrypt.hash(123456, salt);
-        let newUser = new User({ userName, email, password: hashPass });
+        const hashPass = await bcrypt.hash('123456', salt);
+        let newUser = new User({
+          userName: googleUser.payload.name,
+          email,
+          password: hashPass,
+        });
         newUser.save((err, user) => {
           if (err) {
             return res.json({ data: { details: [err] }, errorStatus: true });
@@ -89,7 +92,7 @@ export const signin = async (req, res) => {
     } catch (err) {
       return res.json({
         data: {
-          details: [{ message: 'Please recheck your Google account' }, { err }],
+          details: [{ message: 'Please recheck your Google account' }],
         },
         errorStatus: true,
       });
