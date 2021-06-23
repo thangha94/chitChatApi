@@ -9,32 +9,40 @@ export const receiveMessage = async (socket, data, user) => {
   // Save the message to message
   // Send new message to client
   let room = false;
-  if (data.type === 'direct') {
-    room = await getDirectRoomByUsers([
-      mongoose.Types.ObjectId(data.id),
-      mongoose.Types.ObjectId(user._id),
-    ]);
-    // if the room didn't exist then create new room
-    if (!room || room.length === 0) {
-      room = new Room({
-        name: '',
-        users: [
-          mongoose.Types.ObjectId(data.id),
-          mongoose.Types.ObjectId(user._id),
-        ],
-      });
-      let room = await room.save();
-      if (!room) {
-        console.log('Get error when create Room');
-        return false;
+  try {
+    if (data.type === 'direct') {
+      room = await getDirectRoomByUsers([
+        mongoose.Types.ObjectId(data.id),
+        mongoose.Types.ObjectId(user._id),
+      ]);
+      // if the room didn't exist then create new room
+      if (!room || room.length === 0) {
+        room = new Room({
+          name: '',
+          users: [
+            mongoose.Types.ObjectId(data.id),
+            mongoose.Types.ObjectId(user._id),
+          ],
+        });
+        let roomNew = await room.save();
+        if (!roomNew) {
+          console.log('Get error when create Room');
+          return false;
+        }
+        socket.join(roomNew._id.toString());
+        io.to(user._id.toString()).emit('Server-join-room', {
+          roomId: mongoose.Types.ObjectId(roomNew._id),
+        });
+        room = roomNew;
       }
-      socket.join(room._id.toString());
-      io.to(user._id.toString()).emit('Server-join-room', {
-        roomId: mongoose.Types.ObjectId(room._id),
+    } else {
+      let roomNew = await Room.findOne({
+        _id: mongoose.Types.ObjectId(data.id),
       });
+      room = roomNew;
     }
-  } else {
-    room = await Room.findOne({ _id: mongoose.Types.ObjectId(data.id) });
+  } catch (error) {
+    console.log(error);
   }
 
   if (room) {
