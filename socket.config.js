@@ -23,6 +23,7 @@ export const socketConnection = async (socket) => {
       receiveMessage(socket, data, user.user)
     );
     socket.on('Client-first-join-room', (data) => {
+      console.log('received from client for first time');
       socket.join(data.roomId.toString());
       io.to(data.roomId.toString()).emit('Server-send-new-room-data', {
         data,

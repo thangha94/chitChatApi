@@ -30,7 +30,7 @@ export const receiveMessage = async (socket, data, user) => {
           return false;
         }
         socket.join(roomNew._id.toString());
-        io.to(user._id.toString()).emit('Server-join-room', {
+        io.to(data.id.toString()).emit('Server-join-room', {
           roomId: mongoose.Types.ObjectId(roomNew._id),
         });
         room = roomNew;
